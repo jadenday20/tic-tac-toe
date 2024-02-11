@@ -14,6 +14,7 @@ export default function PlaySpace(props: { column: number; row: number; player: 
                 }
             }
         }
+        
     };
 
     const cellIsEmpty = (cell: { column: number; row: number; player: number; }) => {
