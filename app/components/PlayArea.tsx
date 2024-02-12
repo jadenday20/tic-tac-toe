@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from "react";
 
 export default function PlayArea() {
@@ -11,6 +12,7 @@ export default function PlayArea() {
     const mark = (cell: { column: number; row: number; player: number; }) => {
         if (cellIsEmpty(cell)) {
             // Do something when the cell is empty
+            document.querySelector(`#space-${cell.column}-${cell.row}`)?.classList.toggle("empty-space")
             let cellContents = document.querySelector(`#space-${cell.column}-${cell.row} > p`)
             if (cellContents){
                 if (player == 1){
@@ -21,6 +23,12 @@ export default function PlayArea() {
                 }
                 togglePlayer();
                 checkWinner()
+                if (BoardIsFull()){
+                    let endgame:any = document.querySelector(".game-end-msg");
+                    let endgameP:any = document.querySelector(".result");
+                    endgameP.textContent = "It's a Draw!";
+                    endgame.style.display = "flex";
+                }
 
             }
         }
@@ -55,34 +63,42 @@ export default function PlayArea() {
     
             if (OCount === 3) {
                 let endgame:any = document.querySelector(".game-end-msg");
-                let endgameP:any = document.querySelector(".game-end-msg p");
+                let endgameP:any = document.querySelector(".result");
                 endgameP.textContent = "O Wins!";
                 endgame.style.display = "flex";
             } else if (XCount === 3) {
                 let endgame:any = document.querySelector(".game-end-msg");
-                let endgameP:any = document.querySelector(".game-end-msg p");
+                let endgameP:any = document.querySelector(".result");
                 endgameP.textContent = "X Wins!";
                 endgame.style.display = "flex";
             }
         }
     }
-    const cellIsEmpty = (cell: { column: number; row: number; player: number; }) => {
+    const cellIsEmpty = (cell: { column: number; row: number;}) => {
         let cellContents = document.querySelector(`#space-${cell.column}-${cell.row} > p`)
         if (cellContents && cellContents.innerHTML == null || cellContents?.innerHTML == ""){
             return true;
         }
     };
+    const BoardIsFull = () => {
+        let cells = document.querySelectorAll(".empty-space")
+        if (cells.length == 0){
+            return true;
+        }
+
+    };
 
     return (
         <>
-            <div className="game-end-msg">
-            <p>Hello World</p>
+            <div className="game-end-msg" onClick={() => window.location.reload()}>
+                <p className="result"></p>
+                <p className="close-msg">Click Anywhere to Start Another Game</p>
             </div>
             <h2 id="playerMarker" className="text-2xl font-semibold text-center mb-2">Player {player}</h2>
             <div className="grid-cols-3 grid-rows-3 border-black border-2 grid gap-1 w-fit">
             {[1, 2, 3].map((column) =>
                     [1, 2, 3].map((row) => (
-                        <div key={`${column}-${row}`} id={`space-${column}-${row}`} className={`play-space col-start-${column} row-start-${row}`} onClick={() => mark({ column, row, player })}>
+                        <div key={`${column}-${row}`} id={`space-${column}-${row}`} className={`play-space empty-space col-start-${column} row-start-${row}`} onClick={() => mark({ column, row, player })}>
             <p></p>
         </div>
                     ))
