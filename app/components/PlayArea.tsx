@@ -1,9 +1,20 @@
 'use client'
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function PlayArea() {
     const [player, setPlayer] = useState(1);
+
+    const handleResetClick = () => {
+        // Handle reset click event
+        console.log("Reset clicked");
+      };
+    
+      const handleUndoClick = () => {
+        // Handle undo click event
+        console.log("Undo clicked");
+      };
 
     const togglePlayer = () => {
         setPlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
@@ -21,14 +32,14 @@ export default function PlayArea() {
                 else if (player == 2){
                     cellContents.innerHTML = "O";
                 }
-                togglePlayer();
-                checkWinner()
                 if (BoardIsFull()){
                     let endgame:any = document.querySelector(".game-end-msg");
                     let endgameP:any = document.querySelector(".result");
                     endgameP.textContent = "It's a Draw!";
                     endgame.style.display = "flex";
                 }
+                checkWinner()
+                togglePlayer();
 
             }
         }
@@ -103,6 +114,20 @@ export default function PlayArea() {
         </div>
                     ))
                 )}
+            </div>
+            <div className="options flex mt-2 gap-4">
+                <div className="reset container" onClick={() => window.location.reload()}>
+                    <Image src={"/images/reset.png"} alt="reset" className="reset" width={30} height={30}></Image>
+                    <div className="overlay">
+                        <div className="text">Reset</div>
+                    </div>
+                </div>
+                <div className="undo container">
+                    <Image src={"/images/undo.png"} alt="undo" className="undo" width={30} height={30}></Image>
+                    <div className="overlay">
+                        <div className="text">Undo</div>
+                    </div>
+                </div>
             </div>
         </>
     );

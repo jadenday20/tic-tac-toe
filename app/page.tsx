@@ -1,6 +1,17 @@
 import PlayArea from "./components/PlayArea"
 
 export default function Home() {
+  const handleResetClick = () => {
+    // Handle reset click event
+    console.log("Reset clicked");
+  };
+
+  const handleUndoClick = () => {
+    // Handle undo click event
+    console.log("Undo clicked");
+  };
+
+
   return (
     <main className="bg-slate-100 min-h-screen p-10 flex justify-center">
       <div className="max-w-screen-lg m-auto">
