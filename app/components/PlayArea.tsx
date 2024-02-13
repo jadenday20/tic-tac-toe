@@ -1,19 +1,38 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function PlayArea() {
     const [player, setPlayer] = useState(1);
 
+    const [lastMoveQueue, setLastMoveQueue] = useState<string[]>([]);
+
+    // Function to add an item to the queue
+    const addToLastMoveQueue = (item:string) => {
+      setLastMoveQueue(prevQueue => [...prevQueue, item]);
+    };
+  
+    // Function to remove the last item from the queue
+    const removeFromLastMoveQueue = () => {
+      setLastMoveQueue(prevQueue => {
+        const newQueue = [...prevQueue];
+        newQueue.pop(); // Removes the last element
+        return newQueue;
+      });
+    };
+
     const handleResetClick = () => {
-        // Handle reset click event
-        console.log("Reset clicked");
+        window.location.reload()
       };
     
       const handleUndoClick = () => {
         // Handle undo click event
-        console.log("Undo clicked");
+        document.querySelector(lastMoveQueue[lastMoveQueue.length - 1])?.classList.toggle("empty-space")
+        let p:any = document.querySelector(`${lastMoveQueue[lastMoveQueue.length - 1]} > p`)
+        p.textContent = ""
+        removeFromLastMoveQueue()
+
       };
 
     const togglePlayer = () => {
@@ -23,6 +42,7 @@ export default function PlayArea() {
     const mark = (cell: { column: number; row: number; player: number; }) => {
         if (cellIsEmpty(cell)) {
             // Do something when the cell is empty
+            addToLastMoveQueue(`#space-${cell.column}-${cell.row}`)
             document.querySelector(`#space-${cell.column}-${cell.row}`)?.classList.toggle("empty-space")
             let cellContents = document.querySelector(`#space-${cell.column}-${cell.row} > p`)
             if (cellContents){
@@ -99,9 +119,34 @@ export default function PlayArea() {
 
     };
 
+    useEffect(() => {
+        function handleKeyDown(e:any) {
+          if (e.key === 'Escape' || e.keyCode === 27) {
+            CloseEndMsg()
+          }
+        }
+      
+        document.addEventListener('keydown', handleKeyDown);
+      
+        // Cleanup function to remove the event listener
+        return () => {
+          document.removeEventListener('keydown', handleKeyDown);
+        };
+      }, []); // Empty dependency array to run the effect only once on component mount
+
+    const CloseEndMsg = () => {
+        let EndMsg:any = document.querySelector(".game-end-msg")
+        if (EndMsg.style.display == "flex" ){
+            EndMsg.style.display = "none";
+        }
+        else if (EndMsg.style.display = "none" && BoardIsFull()){
+            EndMsg.style.display = "flex";
+        }
+    };
+
     return (
         <>
-            <div className="game-end-msg" onClick={() => window.location.reload()}>
+            <div className="game-end-msg" onClick={handleResetClick}>
                 <p className="result"></p>
                 <p className="close-msg">Click Anywhere to Start Another Game</p>
             </div>
@@ -116,13 +161,13 @@ export default function PlayArea() {
                 )}
             </div>
             <div className="options flex mt-2 gap-4">
-                <div className="reset container" onClick={() => window.location.reload()}>
+                <div className="reset container" onClick={handleResetClick}>
                     <Image src={"/images/reset.png"} alt="reset" className="reset" width={30} height={30}></Image>
                     <div className="overlay">
                         <div className="text">Reset</div>
                     </div>
                 </div>
-                <div className="undo container">
+                <div className="undo container" onClick={handleUndoClick}>
                     <Image src={"/images/undo.png"} alt="undo" className="undo" width={30} height={30}></Image>
                     <div className="overlay">
                         <div className="text">Undo</div>
