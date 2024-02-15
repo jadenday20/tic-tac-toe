@@ -6,25 +6,39 @@ import Image from "next/image";
 export default function PlayArea() {
     const [player, setPlayer] = useState(1);
 
-    const [lastMoveQueue, setLastMoveQueue] = useState<string[]>([]);
+    const [lastMoveQueue, setMoveQueue] = useState<string[]>([]);
 
     // Function to add an item to the queue
     const addToLastMoveQueue = (item:string) => {
-      setLastMoveQueue(prevQueue => [...prevQueue, item]);
+      setMoveQueue(prevQueue => [...prevQueue, item]);
     };
   
     // Function to remove the last item from the queue
     const removeFromLastMoveQueue = () => {
-      setLastMoveQueue(prevQueue => {
+      setMoveQueue(prevQueue => {
         const newQueue = [...prevQueue];
         newQueue.pop(); // Removes the last element
         return newQueue;
       });
     };
 
+    const resetQueue = () => {
+        setMoveQueue([]);
+    };
+
     const handleResetClick = () => {
         if (lastMoveQueue.length != 0){
-        window.location.reload()
+            resetQueue()
+            let playSpaces = document.querySelectorAll(".play-space")
+            for (let i = 0; i < playSpaces.length; i++){
+                if (! playSpaces[i].classList.contains("empty-space")){
+                    playSpaces[i].classList.toggle("empty-space");
+                    let playSpaceP:any = document.querySelector(`#${playSpaces[i].id} > p`)
+                    playSpaceP.textContent = "";
+                }
+            }
+            setPlayer(1)
+            CloseEndMsg()
         }
       };
     
