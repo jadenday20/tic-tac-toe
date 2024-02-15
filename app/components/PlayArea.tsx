@@ -23,15 +23,19 @@ export default function PlayArea() {
     };
 
     const handleResetClick = () => {
+        if (lastMoveQueue.length != 0){
         window.location.reload()
+        }
       };
     
       const handleUndoClick = () => {
         // Handle undo click event
-        document.querySelector(lastMoveQueue[lastMoveQueue.length - 1])?.classList.toggle("empty-space")
-        let p:any = document.querySelector(`${lastMoveQueue[lastMoveQueue.length - 1]} > p`)
-        p.textContent = ""
-        removeFromLastMoveQueue()
+        if (lastMoveQueue.length != 0){
+            document.querySelector(lastMoveQueue[lastMoveQueue.length - 1])?.classList.toggle("empty-space")
+            let p:any = document.querySelector(`${lastMoveQueue[lastMoveQueue.length - 1]} > p`)
+            p.textContent = ""
+            removeFromLastMoveQueue()
+        }
 
       };
 
